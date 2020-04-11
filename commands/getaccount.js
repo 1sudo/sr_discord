@@ -6,7 +6,7 @@ module.exports = {
 	process: (message, args, pool) => {
 
 		// Ensure the command can only be ran from the #admin channel
-		if (message.channel.id !== '486820348654911528') {
+		if (message.channel.id !== '697727535911272468') {
 			return;
 		}
 		// Ensure arguments exist
@@ -23,7 +23,7 @@ module.exports = {
 			result.forEach(element => {
 				const embed = new Discord.MessageEmbed()
 					.setTitle('Account name for player: ' + args[0])
-					.setColor(0xff471a)
+					.setColor(0x0099ff)
 					.setThumbnail('https://swgsremu.com/wp-content/uploads/2018/08/sr-jedi-white-60.png')
 					.setDescription('Account name: ' + element.username.charAt(0).toUpperCase() + element.username.slice(1));
 

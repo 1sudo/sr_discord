@@ -2,6 +2,7 @@ const getaccount = require('./commands/getaccount');
 const getchars = require('./commands/getchars');
 const gettrainer = require('./commands/gettrainer');
 const getlogs = require('./commands/getlogs');
+const verify = require('./commands/verify');
 
 module.exports = {
 	process: (client, prefix, pool) => {
@@ -37,6 +38,10 @@ module.exports = {
 
 				if (command === 'getlogs') {
 					getlogs.process(message, args, pool);
+				}
+
+				if (command === 'verify') {
+					verify.process(message, args, pool);
 				}
 			}
 		});

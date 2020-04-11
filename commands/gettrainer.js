@@ -6,7 +6,7 @@ module.exports = {
 	process: (message, args, pool) => {
 
 		// Ensure the command can only be ran from the #admin channel
-		if (message.channel.id !== '486820348654911528') {
+		if (message.channel.id !== '697727535911272468') {
 			return;
 		}
 		// Ensure enough arguments exist
