@@ -12,9 +12,6 @@ const mysql_user = process.env.MYSQL_USER;
 const mysql_pass = process.env.MYSQL_PASS;
 const mysql_db = process.env.MYSQL_DB;
 const prefix = process.env.COMMAND_PREFIX;
-const admin_roles = process.env.ADMIN_ROLES;
-
-const adminRoles = admin_roles.split(',');
 
 // Create MySQL pool
 const pool = mysql.createPool({
@@ -26,7 +23,7 @@ const pool = mysql.createPool({
 });
 
 // Require all bot commands
-const message = require('./commands/message');
+const message = require('./message');
 
 // Notify once the bot has connected.
 client.once('ready', () => {
@@ -38,13 +35,6 @@ client.once('ready', () => {
 		});
 });
 
-// Define arguments to be passed
-const args = [];
-args.client = client;
-args.prefix = prefix;
-args.pool = pool;
-args.adminRoles = adminRoles;
-
-message.process(args);
+message.process(client, prefix, pool);
 
 client.login(token);
