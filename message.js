@@ -1,6 +1,7 @@
 const getaccount = require('./commands/getaccount');
 const getchars = require('./commands/getchars');
 const gettrainer = require('./commands/gettrainer');
+const getlogs = require('./commands/getlogs');
 
 module.exports = {
 	process: (client, prefix, pool) => {
@@ -32,6 +33,10 @@ module.exports = {
 
 				if (command === 'gettrainer') {
 					gettrainer.process(message, args, pool);
+				}
+
+				if (command === 'getlogs') {
+					getlogs.process(message, args, pool);
 				}
 			}
 		});

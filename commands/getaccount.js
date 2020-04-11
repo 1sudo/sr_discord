@@ -6,7 +6,7 @@ module.exports = {
 	process: (message, args, pool) => {
 
 		// Ensure the command can only be ran from the #admin channel
-		if (message.channel.id !== '697727535911272468') {
+		if (message.channel.id !== '486820348654911528') {
 			return;
 		}
 		// Ensure arguments exist
@@ -18,8 +18,6 @@ module.exports = {
 			pool, 'SELECT username FROM accounts WHERE account_id IN \
 			(SELECT account_id from characters where firstname = ' + mysql.escape(args[0]) + ')',
 		);
-
-		console.log('is it firing?');
 
 		accountdata.then(result => {
 			result.forEach(element => {
