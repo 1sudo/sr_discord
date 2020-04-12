@@ -1,12 +1,7 @@
 const MessageAttachment = require('discord.js');
 
 module.exports = {
-	process: (message, args) => {
-
-		// Ensure the command can only be ran from the #admin channel
-		if (message.channel.id !== '697727535911272468') {
-			return;
-		}
+	process: async (message, args) => {
 
 		const attachment = new MessageAttachment('../MMOCoreORB/bin/log/admin/admin.log');
 

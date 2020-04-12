@@ -1,14 +1,10 @@
 const mysql = require('mysql');
-const query = require('../func/query');
+const query = require('../database/query');
 const Discord = require('discord.js');
 
 module.exports = {
-	process: (message, args, pool) => {
+	process: async (message, args, pool, footer) => {
 
-		// Ensure the command can only be ran from the #admin channel
-		if (message.channel.id !== '697727535911272468') {
-			return;
-		}
 		// Ensure arguments exist
 		if (!args.length) {
 			return message.channel.send('You did not provide any arguments!');
@@ -36,6 +32,7 @@ module.exports = {
 					.attachFiles(['assets/images/species/' + part[0] + '.png'])
 					.setURL('https://manage.swgsremu.com/admin/accounts/edit.php?type=game&account_id=' + element.account_id)
 					.setColor(0x0099ff)
+					.setFooter(footer)
 					.setDescription('**Character Object ID**: ' + element.character_oid + ' \n' +
 					'**Character**: ' + race + ' ' + gender + ' - ' + firstname + ' ' + surname + '\n' +
 					'**Date created**: ' + element.creation_date + '\n')
@@ -47,6 +44,7 @@ module.exports = {
 			const embed = new Discord.MessageEmbed()
 				.setTitle('Get characters error!')
 				.setColor(0xff471a)
+				.setFooter(footer)
 				.setThumbnail('https://swgsremu.com/wp-content/uploads/2018/08/sr-jedi-white-60.png')
 				.setDescription('**An error occurred, please send this error to the devs**: \n _' + err + '_');
 

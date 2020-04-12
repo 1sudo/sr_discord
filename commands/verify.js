@@ -1,17 +1,20 @@
 const mysql = require('mysql');
-const query = require('../func/query');
+const query = require('../database/query');
 const Discord = require('discord.js');
 
 module.exports = {
-	process: async (message, args, pool) => {
+	process: async (message, args, pool, footer) => {
 
-		// Ensure the command can only be ran from the #admin channel
-		if (message.channel.id !== '486820348654911528') {
-			return;
-		}
 		// Ensure arguments exist
 		if (!args.length) {
-			return message.channel.send('You did not provide any arguments!');
+			const embed = new Discord.MessageEmbed()
+				.setTitle('Verification error!')
+				.setColor(0xff471a)
+				.setFooter(footer)
+				.setThumbnail('https://swgsremu.com/wp-content/uploads/2018/08/sr-jedi-white-60.png')
+				.setDescription('**Please provide your characters first name!** \n' + '**Example**: !verify obi-wan');
+
+			return message.channel.send(embed);
 		}
 
 		if (message.author.id == message.author.id) {
@@ -42,6 +45,7 @@ module.exports = {
 						const embed = new Discord.MessageEmbed()
 							.setTitle('Verification error!')
 							.setColor(0xff471a)
+							.setFooter(footer)
 							.setThumbnail('https://swgsremu.com/wp-content/uploads/2018/08/sr-jedi-white-60.png')
 							.setDescription('**Your account is already verified!**');
 
@@ -53,6 +57,7 @@ module.exports = {
 							.setTitle('Verification successful')
 							.attachFiles(['assets/images/species/' + part[0] + '.png'])
 							.setColor(0x0099ff)
+							.setFooter(footer)
 							.setDescription(
 								'**Character: ' + race + ' ' + gender + ' - ' + firstname + ' ' + surname + '**\n' +
 								'Welcome to the Sentinels Republic Discord!' + '\n' +
@@ -72,6 +77,7 @@ module.exports = {
 						const embed = new Discord.MessageEmbed()
 							.setTitle('Verification error!')
 							.setColor(0xff471a)
+							.setFooter(footer)
 							.setThumbnail('https://swgsremu.com/wp-content/uploads/2018/08/sr-jedi-white-60.png')
 							.setDescription('**Something went wrong: ' + err + '**' + '\n Please report this issue to a developer!');
 
@@ -83,6 +89,7 @@ module.exports = {
 				const embed = new Discord.MessageEmbed()
 					.setTitle('Verification error!')
 					.setColor(0xff471a)
+					.setFooter(footer)
 					.setThumbnail('https://swgsremu.com/wp-content/uploads/2018/08/sr-jedi-white-60.png')
 					.setDescription('**No character named: ' + args[0] + '**');
 
@@ -92,6 +99,7 @@ module.exports = {
 			const embed = new Discord.MessageEmbed()
 				.setTitle('Get characters error!')
 				.setColor(0xff471a)
+				.setFooter(footer)
 				.setThumbnail('https://swgsremu.com/wp-content/uploads/2018/08/sr-jedi-white-60.png')
 				.setDescription('**An error occurred, please send this error to the devs**: \n _' + err + '_');
 

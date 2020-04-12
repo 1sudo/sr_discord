@@ -1,19 +1,16 @@
 const mysql = require('mysql');
-const query = require('../func/query');
+const query = require('../database/query');
 const Discord = require('discord.js');
 
 module.exports = {
-	process: (message, args, pool) => {
+	process: async (message, args, pool, footer) => {
 
-		// Ensure the command can only be ran from the #admin channel
-		if (message.channel.id !== '697727535911272468') {
-			return;
-		}
 		// Ensure enough arguments exist
 		if (args.length != 2) {
 			const embed = new Discord.MessageEmbed()
 				.setTitle('Trainer location error!')
 				.setColor(0xff471a)
+				.setFooter(footer)
 				.setThumbnail('https://swgsremu.com/wp-content/uploads/2018/08/sr-jedi-white-60.png')
 				.setDescription('You did not provide enough arguments! \n **Usage**: !gettrainer <profession> <planet>');
 
@@ -89,6 +86,7 @@ module.exports = {
 				const embed = new Discord.MessageEmbed()
 					.setTitle('Trainer locations for: ' + mysql.escape(args[0]) + ' on ' + mysql.escape(planetName))
 					.setColor(0x0099ff)
+					.setFooter(footer)
 					.setDescription(
 						'Location: ' + element.Location + '\n' +
 						'X: ' + element.WorldX + ' Y: ' + element.WorldY + ' Z: ' + element.WorldZ,
@@ -100,6 +98,7 @@ module.exports = {
 			const embed = new Discord.MessageEmbed()
 				.setTitle('Trainer location error!')
 				.setColor(0xff471a)
+				.setFooter(footer)
 				.setThumbnail('https://swgsremu.com/wp-content/uploads/2018/08/sr-jedi-white-60.png')
 				.setDescription('**An error occurred, please send this error to the devs**: \n _' + err + '_');
 

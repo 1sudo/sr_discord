@@ -1,6 +1,5 @@
 module.exports = {
 	process: (pool, query) => {
-		console.log(query);
 		return new Promise((resolve, reject) => {
 			pool.query(
 				query,
