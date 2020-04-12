@@ -41,6 +41,13 @@ module.exports = {
 			break;
 		}
 
+		const planetembed = new Discord.MessageEmbed()
+			.setTitle('Get trainer error!')
+			.setColor(0xff471a)
+			.setFooter(footer)
+			.setDescription('**Invalid planet name!** \n' +
+			'Usage: !gettrainer <profession name> <planet name>');
+
 		// Convert planet names to ID
 		switch (args[1]) {
 		case 'corellia':
@@ -73,6 +80,8 @@ module.exports = {
 		case 'yavin':
 			args[1] = 9;
 			break;
+		default:
+			return message.channel.send(planetembed);
 		}
 
 		const trainerdata = query.process(
@@ -81,19 +90,22 @@ module.exports = {
 		);
 
 		trainerdata.then(result => {
-			result.forEach(element => {
 
-				const embed = new Discord.MessageEmbed()
-					.setTitle('Trainer locations for: ' + mysql.escape(args[0]) + ' on ' + mysql.escape(planetName))
-					.setColor(0x0099ff)
-					.setFooter(footer)
-					.setDescription(
-						'Location: ' + element.Location + '\n' +
-						'X: ' + element.WorldX + ' Y: ' + element.WorldY + ' Z: ' + element.WorldZ,
-					);
+			let bufferstring = '';
 
-				message.channel.send(embed);
-			});
+			for (let i = 0; i < result.length; i++) {
+				bufferstring = bufferstring + 'Location: ' + result[i].Location + '\n' + 'X: ' +
+				result[i].WorldX + ' Y: ' + result[i].WorldY + ' Z: ' + result[i].WorldZ + '\n\n';
+			}
+
+			const embed = new Discord.MessageEmbed()
+				.setTitle('Trainer locations for: ' + mysql.escape(args[0]) + ' on ' + mysql.escape(planetName))
+				.setColor(0x0099ff)
+				.setFooter(footer)
+				.setDescription(bufferstring);
+
+			return message.channel.send(embed);
+
 		}).catch((err) => {
 			const embed = new Discord.MessageEmbed()
 				.setTitle('Trainer location error!')
@@ -106,6 +118,5 @@ module.exports = {
 		});
 
 		query.release(pool);
-
 	},
 };
