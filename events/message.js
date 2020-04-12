@@ -21,8 +21,6 @@ module.exports = {
 			for (const [key, value] of Object.entries(roles.admin_roles)) {
 				if (message.member.roles.cache.has(`${value}`)) {
 
-					console.log(channels.admin_channel);
-
 					// Ensure the command can only be ran from the admin channel
 					if (message.channel.id != channels.admin_channel) return;
 
@@ -50,8 +48,6 @@ module.exports = {
 			 */
 			for (const [key, value] of Object.entries(roles.staff_roles)) {
 				if (message.member.roles.cache.has(`${value}`)) {
-
-					console.log(channels.staff_channel);
 
 					// Ensure the command can only be ran from the staff channel
 					if (message.channel.id != channels.staff_channel) return;
