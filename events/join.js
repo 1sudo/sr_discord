@@ -3,7 +3,7 @@ const query = require('../database/query');
 const Discord = require('discord.js');
 
 module.exports = {
-	process: async (client, pool, footer) => {
+	process: async (client, pool, footer, channels) => {
 
 		client.on('guildMemberAdd', (member) => {
 			const memberid = member.user.id;
@@ -35,7 +35,7 @@ module.exports = {
 						.setFooter(footer)
 						.setDescription('An error was encountered when inserting data into the database: ' + err);
 
-					member.guild.channels.cache.get('698367300876894316').send(embed);
+					member.guild.channels.cache.get(channels.admin_channel).send(embed);
 				});
 
 				query.release(pool);
@@ -63,7 +63,7 @@ module.exports = {
 					
 					If you encounter any issues, please let us know.`);
 
-				return member.guild.channels.cache.get('698367300876894316').send(`<@${memberid}>`, embed);
+				return member.guild.channels.cache.get(channels.unverified_channel).send(`<@${memberid}>`, embed);
 
 			});
 		});

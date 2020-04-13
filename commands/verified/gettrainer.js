@@ -94,14 +94,16 @@ module.exports = {
 			let bufferstring = '';
 
 			for (let i = 0; i < result.length; i++) {
-				bufferstring = bufferstring + 'Location: ' + result[i].Location + '\n' + 'X: ' +
-				result[i].WorldX + ' Y: ' + result[i].WorldY + ' Z: ' + result[i].WorldZ + '\n\n';
+				bufferstring = bufferstring + '**Location**: ' + result[i].Location + '\n' + '**X**: ' +
+				result[i].WorldX + '\n **Y**: ' + result[i].WorldY + '\n **Z**: ' + result[i].WorldZ + '\n\n';
 			}
 
 			const embed = new Discord.MessageEmbed()
 				.setTitle('Trainer locations for: ' + mysql.escape(args[0]) + ' on ' + mysql.escape(planetName))
+				.attachFiles(['assets/images/planets/' + planetName + '.png'])
 				.setColor(0x0099ff)
 				.setFooter(footer)
+				.setThumbnail('attachment://' + planetName + '.png')
 				.setDescription(bufferstring);
 
 			return message.channel.send(embed);

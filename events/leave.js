@@ -3,7 +3,7 @@ const query = require('../database/query');
 const Discord = require('discord.js');
 
 module.exports = {
-	process: (client, pool, footer) => {
+	process: (client, pool, footer, channels) => {
 		client.on('guildMemberRemove', (member) => {
 
 			/**
@@ -40,7 +40,7 @@ module.exports = {
 					.setFooter(footer)
 					.setDescription('An error was encountered when inserting data into the database: ' + err);
 
-				return member.guild.channels.cache.get('698367300876894316').send(embed);
+				return member.guild.channels.cache.get(channels.admin_channel).send(embed);
 			});
 
 			query.release(pool);

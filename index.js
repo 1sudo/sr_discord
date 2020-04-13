@@ -93,7 +93,7 @@ const channels = {
 };
 
 message.process(client, prefix, pool, footer, roles, channels);
-join.process(client, pool, footer);
-leave.process(client, pool, footer);
+join.process(client, pool, footer, channels);
+leave.process(client, pool, footer, channels);
 
 client.login(token);
