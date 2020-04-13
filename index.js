@@ -61,7 +61,7 @@ tAdmin_roles.forEach((role) => {
 /**
  * Staff roles
  */
-const tStaff_roles = cStaff_roles.split(',');;
+const tStaff_roles = cStaff_roles.split(',');
 const staff_roles = {};
 
 tStaff_roles.forEach((role) => {
