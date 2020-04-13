@@ -1,9 +1,9 @@
 const mysql = require('mysql');
-const query = require('../database/query');
+const query = require('../../database/query');
 const Discord = require('discord.js');
 
 module.exports = {
-	process: async (message, args, pool, footer) => {
+	process: async (message, args, pool, footer, verified_role) => {
 
 		// Ensure arguments exist
 		if (!args.length) {
@@ -39,7 +39,7 @@ module.exports = {
 
 					// message.channel.send(message.member.user.tag);
 
-					const roleid = '337972445933862915';
+					const roleid = verified_role;
 
 					if (message.member.roles.cache.has(roleid)) {
 						const embed = new Discord.MessageEmbed()

@@ -24,6 +24,7 @@ const cStaff_roles = process.env.STAFF_ROLES;
 const staff_channel = process.env.STAFF_CHANNEL;
 const verified_role = process.env.VERIFIED_ROLE;
 const verified_channel = process.env.VERIFIED_CHANNEL;
+const unverified_channel = process.env.UNVERIFIED_CHANNEL;
 
 // Create MySQL pool
 const pool = mysql.createPool({
@@ -88,6 +89,7 @@ const channels = {
 	admin_channel: admin_channel,
 	staff_channel: staff_channel,
 	verified_channel: verified_channel,
+	unverified_channel: unverified_channel,
 };
 
 message.process(client, prefix, pool, footer, roles, channels);

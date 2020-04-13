@@ -1,78 +1,108 @@
-const getaccount = require('../commands/getaccount');
-const getchars = require('../commands/getchars');
-const gettrainer = require('../commands/gettrainer');
-const getlogs = require('../commands/getlogs');
-const verify = require('../commands/verify');
+const fs = require('fs');
+
+// Admin
+const getlogs = require('../commands/admin/getlogs');
+
+// Staff
+const getaccount = require('../commands/staff/getaccount');
+const getchars = require('../commands/staff/getchars');
+
+// Verified
+const gettrainer = require('../commands/verified/gettrainer');
+
+// Unverified
+const verify = require('../commands/unverified/verify');
 
 module.exports = {
 	process: async (client, prefix, pool, footer, roles, channels) => {
 
 		client.on('message', async message => {
+
 			// Ignore other bots and makes your bot ignore itself so as not to loop and require prefix
 			if (message.author.bot) return;
 			if (message.content.indexOf(prefix) !== 0) return;
 
+			// Get command and arguments
 			const args = message.content.slice(prefix.length).split(' ');
 			const command = args.shift(0).toLowerCase();
 
 			/**
 			 * ADMIN COMMANDS
 			 */
-			for (const [key, value] of Object.entries(roles.admin_roles)) {
-				if (message.member.roles.cache.has(`${value}`)) {
+			const adminFiles = fs.readdirSync('commands/admin').filter(file => file.endsWith('.js'));
 
-					// Ensure the command can only be ran from the admin channel
-					if (message.channel.id != channels.admin_channel) return;
+			adminFiles.forEach((tFile) => {
+				const adminCommandFileName = tFile.split('.');
+				const adminCommandName = adminCommandFileName[0].split('_');
+				for (const [key, value] of Object.entries(roles.admin_roles)) {
+					if (message.member.roles.cache.has(`${value}`)) {
 
-					if (command === 'getaccount') {
-						getaccount.process(message, args, pool, footer);
+						// Ensure the command can only be ran from the admin channel
+						if (message.channel.id != channels.admin_channel) return;
+
+						if (command === adminCommandName[0]) {
+							eval(adminCommandName[0]).process(message, args, pool, footer);
+						}
 					}
-
-					if (command === 'getchars') {
-						getchars.process(message, args, pool, footer);
-					}
-
-					if (command === 'gettrainer') {
-						gettrainer.process(message, args, pool, footer);
-					}
-
-					if (command === 'getlogs') {
-						getlogs.process(message, args, pool);
-					}
-
 				}
-			}
+			});
 
 			/**
 			 * STAFF COMMANDS
 			 */
-			for (const [key, value] of Object.entries(roles.staff_roles)) {
-				if (message.member.roles.cache.has(`${value}`)) {
+			const staffFiles = fs.readdirSync('commands/staff').filter(file => file.endsWith('.js'));
 
-					// Ensure the command can only be ran from the staff channel
-					if (message.channel.id != channels.staff_channel) return;
+			staffFiles.forEach((tFile) => {
+				const staffCommandFileName = tFile.split('.');
+				const staffCommandName = staffCommandFileName[0].split('_');
+				for (const [key, value] of Object.entries(roles.staff_roles)) {
+					if (message.member.roles.cache.has(`${value}`)) {
 
-					// Commands here...
+						// Ensure the command can only be ran from the staff channel
+						if (message.channel.id != channels.staff_channel || message.channel.id != channels.admin_channel) return;
+
+						if (command === staffCommandName[0]) {
+							eval(staffCommandName[0]).process(message, args, pool, footer);
+						}
+					}
 				}
-			}
+			});
 
 			/**
 			 * VERIFIED USER COMMANDS
 			 */
-			if (message.member.roles.cache.has(roles.verified_role)) {
+			const verifiedFiles = fs.readdirSync('commands/verified').filter(file => file.endsWith('.js'));
 
-				// Ensure the command can only be ran from the verified channel
-				if (message.channel.id != channels.verified_channel) return;
+			verifiedFiles.forEach((tFile) => {
+				const verifiedCommandFileName = tFile.split('.');
+				const verifiedCommandName = verifiedCommandFileName[0].split('_');
+				if (message.member.roles.cache.has(roles.verified_role)) {
 
-				// Commands here...
-			}
+					// Ensure the command can only be ran from the verified channel
+					if (message.channel.id != channels.verified_channel) return;
+
+					if (command === verifiedCommandName[0]) {
+						eval(verifiedCommandName[0]).process(message, args, pool, footer);
+					}
+				}
+			});
 
 			/**
-			 * REGULAR USER COMMANDS
+			 * UNVERIFIED USER COMMANDS
 			 */
-			if (command === 'verify') {
-				verify.process(message, args, pool, footer, roles);
-			}
+			const unverifiedFiles = fs.readdirSync('commands/unverified').filter(file => file.endsWith('.js'));
+
+			unverifiedFiles.forEach((tFile) => {
+				const unverifiedCommandFileName = tFile.split('.');
+				const unverifiedCommandName = unverifiedCommandFileName[0].split('_');
+
+				// Ensure the command can only be ran from the unverified channel
+				if (message.channel.id != channels.unverified_channel) return;
+
+				if (command === unverifiedCommandName[0]) {
+					eval(unverifiedCommandName[0]).process(message, args, pool, footer, roles.verified_role);
+				}
+			});
 		});
 	},
 };
