@@ -1,16 +1,21 @@
 const fs = require('fs');
 
 // Admin
+// eslint-disable-next-line no-unused-vars
 const getlogs = require('../commands/admin/getlogs');
 
 // Staff
+// eslint-disable-next-line no-unused-vars
 const getaccount = require('../commands/staff/getaccount');
+// eslint-disable-next-line no-unused-vars
 const getchars = require('../commands/staff/getchars');
 
 // Verified
+// eslint-disable-next-line no-unused-vars
 const gettrainer = require('../commands/verified/gettrainer');
 
 // Unverified
+// eslint-disable-next-line no-unused-vars
 const verify = require('../commands/unverified/verify');
 
 module.exports = {
@@ -34,6 +39,7 @@ module.exports = {
 			adminFiles.forEach((tFile) => {
 				const adminCommandFileName = tFile.split('.');
 				const adminCommandName = adminCommandFileName[0].split('_');
+				// eslint-disable-next-line no-unused-vars
 				for (const [key, value] of Object.entries(roles.admin_roles)) {
 					if (message.member.roles.cache.has(`${value}`)) {
 
@@ -55,6 +61,7 @@ module.exports = {
 			staffFiles.forEach((tFile) => {
 				const staffCommandFileName = tFile.split('.');
 				const staffCommandName = staffCommandFileName[0].split('_');
+				// eslint-disable-next-line no-unused-vars
 				for (const [key, value] of Object.entries(roles.staff_roles)) {
 					if (message.member.roles.cache.has(`${value}`)) {
 

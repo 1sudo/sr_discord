@@ -18,6 +18,17 @@ module.exports = {
 		}
 
 		const planetName = args[1];
+		const professionName = args[0];
+
+		const rPlanetName = planetName.charAt(0).toUpperCase() + planetName.slice(1);
+		const rProfessionName = professionName.charAt(0).toUpperCase() + professionName.slice(1);
+
+		const professionembed = new Discord.MessageEmbed()
+			.setTitle('Get trainer error!')
+			.setColor(0xff471a)
+			.setFooter(footer)
+			.setDescription('**Invalid profession name!** \n' +
+			'Usage: !gettrainer <profession name> <planet name>');
 
 		// Convert profession names to their uncommon database name
 		switch (args[0]) {
@@ -39,6 +50,63 @@ module.exports = {
 		case 'fencer':
 			args[0] = '1hsword';
 			break;
+		case 'pistoleer':
+			args[0] = 'pistol';
+			break;
+		case 'merchant':
+			break;
+		case 'entertainer':
+			break;
+		case 'droidengineer':
+			break;
+		case 'weaponsmith':
+			break;
+		case 'artisan':
+			break;
+		case 'creaturehandler':
+			break;
+		case 'architect':
+			break;
+		case 'tailor':
+			break;
+		case 'armorsmith':
+			break;
+		case 'medic':
+			break;
+		case 'marksman':
+			break;
+		case 'musician':
+			break;
+		case 'combatmedic':
+			break;
+		case 'smuggler':
+			break;
+		case 'doctor':
+			break;
+		case 'dancer':
+			break;
+		case 'scout':
+			break;
+		case 'ranger':
+			break;
+		case 'imagedesigner':
+			break;
+		case 'squadleader':
+			break;
+		case 'chef':
+			break;
+		case 'bountyhunter':
+			break;
+		case 'brawler':
+			break;
+		case 'bioengineer':
+			break;
+		case 'rifleman':
+			break;
+		case 'commando':
+			break;
+		default:
+			return message.channel.send(professionembed);
 		}
 
 		const planetembed = new Discord.MessageEmbed()
@@ -99,7 +167,7 @@ module.exports = {
 			}
 
 			const embed = new Discord.MessageEmbed()
-				.setTitle('Trainer locations for: ' + mysql.escape(args[0]) + ' on ' + mysql.escape(planetName))
+				.setTitle('Trainer locations for: ' + mysql.escape(rProfessionName) + ' on ' + mysql.escape(rPlanetName))
 				.attachFiles(['assets/images/planets/' + planetName + '.png'])
 				.setColor(0x0099ff)
 				.setFooter(footer)
