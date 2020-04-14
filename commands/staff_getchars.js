@@ -1,5 +1,5 @@
 const mysql = require('mysql');
-const query = require('../../database/query');
+const query = require('../database/query');
 const Discord = require('discord.js');
 
 module.exports = {

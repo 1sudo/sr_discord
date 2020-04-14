@@ -2,26 +2,26 @@ const fs = require('fs');
 
 // Admin
 // eslint-disable-next-line no-unused-vars
-const getlogs = require('../commands/admin/getlogs');
+const getlogs = require('../commands/admin_getlogs');
 
 // Staff
 // eslint-disable-next-line no-unused-vars
-const getaccount = require('../commands/staff/getaccount');
+const getaccount = require('../commands/staff_getaccount');
 // eslint-disable-next-line no-unused-vars
-const getchars = require('../commands/staff/getchars');
+const getchars = require('../commands/staff_getchars');
 
 // Verified
 // eslint-disable-next-line no-unused-vars
-const gettrainer = require('../commands/verified/gettrainer');
+const gettrainer = require('../commands/verified_gettrainer');
 
 // Unverified
 // eslint-disable-next-line no-unused-vars
-const verify = require('../commands/unverified/verify');
+const verify = require('../commands/unverified_verify');
 
 module.exports = {
 	process: async (client, prefix, pool, footer, roles, channels) => {
 
-		client.on('message', async message => {
+		client.on('message', message => {
 
 			// Ignore other bots and makes your bot ignore itself so as not to loop and require prefix
 			if (message.author.bot) return;
@@ -31,10 +31,7 @@ module.exports = {
 			const args = message.content.slice(prefix.length).split(' ');
 			const command = args.shift(0).toLowerCase();
 
-			/**
-			 * ADMIN COMMANDS
-			 */
-			const adminFiles = fs.readdirSync('commands/admin').filter(file => file.endsWith('.js'));
+			const adminFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js')).filter(file => file.startsWith('admin'));
 
 			adminFiles.forEach((tFile) => {
 				const adminCommandFileName = tFile.split('.');
@@ -43,20 +40,20 @@ module.exports = {
 				for (const [key, value] of Object.entries(roles.admin_roles)) {
 					if (message.member.roles.cache.has(`${value}`)) {
 
-						// Ensure the command can only be ran from the admin channel
-						if (message.channel.id != channels.admin_channel) return;
+						let canIssue = false;
+						// eslint-disable-next-line no-unused-vars
+						for (const [channelName, channelID] of Object.entries(channels.admin.channels)) {
+							if (message.channel.id == channelID) canIssue = true;
+						}
 
-						if (command === adminCommandName[0]) {
-							eval(adminCommandName[0]).process(message, args, pool, footer);
+						if (command === adminCommandName[1] && canIssue) {
+							eval(adminCommandName[1]).process(message, args, pool, footer);
 						}
 					}
 				}
 			});
 
-			/**
-			 * STAFF COMMANDS
-			 */
-			const staffFiles = fs.readdirSync('commands/staff').filter(file => file.endsWith('.js'));
+			const staffFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js')).filter(file => file.startsWith('staff'));
 
 			staffFiles.forEach((tFile) => {
 				const staffCommandFileName = tFile.split('.');
@@ -65,51 +62,61 @@ module.exports = {
 				for (const [key, value] of Object.entries(roles.staff_roles)) {
 					if (message.member.roles.cache.has(`${value}`)) {
 
-						// Ensure the command can only be ran from the staff channel
-						if (message.channel.id != channels.staff_channel || message.channel.id != channels.admin_channel) return;
+						let canIssue = false;
+						// eslint-disable-next-line no-unused-vars
+						for (const [channelName, channelID] of Object.entries(channels.staff.channels)) {
+							if (message.channel.id == channelID) canIssue = true;
+						}
 
-						if (command === staffCommandName[0]) {
-							eval(staffCommandName[0]).process(message, args, pool, footer);
+						if (command === staffCommandName[1] && canIssue) {
+							eval(staffCommandName[1]).process(message, args, pool, footer);
 						}
 					}
 				}
 			});
 
-			/**
-			 * VERIFIED USER COMMANDS
-			 */
-			const verifiedFiles = fs.readdirSync('commands/verified').filter(file => file.endsWith('.js'));
+			const verifiedFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js')).filter(file => file.startsWith('verified'));
 
 			verifiedFiles.forEach((tFile) => {
 				const verifiedCommandFileName = tFile.split('.');
 				const verifiedCommandName = verifiedCommandFileName[0].split('_');
-				if (message.member.roles.cache.has(roles.verified_role)) {
+				// eslint-disable-next-line no-unused-vars
+				for (const [key, value] of Object.entries(roles.verified_roles)) {
+					if (message.member.roles.cache.has(`${value}`)) {
 
-					// Ensure the command can only be ran from the verified channel
-					if (message.channel.id != channels.verified_channel) return;
+						let canIssue = false;
+						// eslint-disable-next-line no-unused-vars
+						for (const [channelName, channelID] of Object.entries(channels.verified.channels)) {
+							if (message.channel.id == channelID) canIssue = true;
+						}
 
-					if (command === verifiedCommandName[0]) {
-						eval(verifiedCommandName[0]).process(message, args, pool, footer);
+						if (command === verifiedCommandName[1] && canIssue) {
+							eval(verifiedCommandName[1]).process(message, args, pool, footer);
+						}
 					}
 				}
 			});
 
-			/**
-			 * UNVERIFIED USER COMMANDS
-			 */
-			const unverifiedFiles = fs.readdirSync('commands/unverified').filter(file => file.endsWith('.js'));
+			const unverifiedFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js')).filter(file => file.startsWith('unverified'));
 
 			unverifiedFiles.forEach((tFile) => {
 				const unverifiedCommandFileName = tFile.split('.');
 				const unverifiedCommandName = unverifiedCommandFileName[0].split('_');
 
-				// Ensure the command can only be ran from the unverified channel
-				if (message.channel.id != channels.unverified_channel) return;
+				let canIssue = false;
+				// eslint-disable-next-line no-unused-vars
+				for (const [channelName, channelID] of Object.entries(channels.unverified.channels)) {
+					if (message.channel.id == channelID) canIssue = true;
+				}
 
-				if (command === unverifiedCommandName[0]) {
-					eval(unverifiedCommandName[0]).process(message, args, pool, footer, roles.verified_role);
+				if (command === unverifiedCommandName[1] && canIssue) {
+					// eslint-disable-next-line no-unused-vars
+					for (const [roleName, roleID] of Object.entries(roles.verified_roles)) {
+						eval(unverifiedCommandName[1]).process(message, args, pool, footer, roleID);
+					}
 				}
 			});
+
 		});
 	},
 };

@@ -22,9 +22,10 @@ const cAdmin_roles = process.env.ADMIN_ROLES;
 const admin_channel = process.env.ADMIN_CHANNEL;
 const cStaff_roles = process.env.STAFF_ROLES;
 const staff_channel = process.env.STAFF_CHANNEL;
-const verified_role = process.env.VERIFIED_ROLE;
+const cVerified_roles = process.env.VERIFIED_ROLES;
 const verified_channel = process.env.VERIFIED_CHANNEL;
 const unverified_channel = process.env.UNVERIFIED_CHANNEL;
+const cUnverified_roles = process.env.UNVERIFIED_ROLES;
 
 // Create MySQL pool
 const pool = mysql.createPool({
@@ -74,22 +75,70 @@ tStaff_roles.forEach((role) => {
 });
 
 /**
+ * Verified roles
+ */
+const tVerified_roles = cVerified_roles.split(',');
+const verified_roles = {};
+
+tVerified_roles.forEach((role) => {
+	const part = role.split('|');
+	const role_name = part[0];
+	const role_id = part[1];
+
+	verified_roles[role_name] = role_id;
+});
+
+/**
+ * Verified roles
+ */
+const tUnverified_roles = cUnverified_roles.split(',');
+const unverified_roles = {};
+
+tUnverified_roles.forEach((role) => {
+	const part = role.split('|');
+	const role_name = part[0];
+	const role_id = part[1];
+
+	unverified_roles[role_name] = role_id;
+});
+
+/**
  * All roles object
  */
 const roles = {
 	admin_roles: admin_roles,
 	staff_roles: staff_roles,
-	verified_role: verified_role,
+	verified_roles: verified_roles,
+	unverified_roles: unverified_roles,
 };
 
 /**
  * Channels
  */
 const channels = {
-	admin_channel: admin_channel,
-	staff_channel: staff_channel,
-	verified_channel: verified_channel,
-	unverified_channel: unverified_channel,
+	admin: {
+		channels: {
+			admin: admin_channel,
+		},
+	},
+	staff: {
+		channels: {
+			admin: admin_channel,
+			staff: staff_channel,
+		},
+	},
+	verified: {
+		channels: {
+			verified: verified_channel,
+			staff: staff_channel,
+			admin: admin_channel,
+		},
+	},
+	unverified: {
+		channels: {
+			unverified: unverified_channel,
+		},
+	},
 };
 
 message.process(client, prefix, pool, footer, roles, channels);

@@ -1,9 +1,15 @@
 const mysql = require('mysql');
-const query = require('../../database/query');
+const query = require('../database/query');
 const Discord = require('discord.js');
 
 module.exports = {
 	process: async (message, args, pool, footer, verified_role) => {
+
+		const memberid = message.author.id;
+
+		if (message.author.id == message.author.id) {
+			message.delete();
+		}
 
 		// Ensure arguments exist
 		if (!args.length) {
@@ -14,11 +20,7 @@ module.exports = {
 				.setThumbnail('https://swgsremu.com/wp-content/uploads/2018/08/sr-jedi-white-60.png')
 				.setDescription('**Please provide your characters first name!** \n' + '**Example**: !verify obi-wan');
 
-			return message.channel.send(embed);
-		}
-
-		if (message.author.id == message.author.id) {
-			message.delete();
+			return message.channel.send(`<@${memberid}>`, embed);
 		}
 
 		const chardata = query.process(
@@ -49,7 +51,7 @@ module.exports = {
 							.setThumbnail('https://swgsremu.com/wp-content/uploads/2018/08/sr-jedi-white-60.png')
 							.setDescription('**Your account is already verified!**');
 
-						return message.channel.send(embed);
+						return message.channel.send(`<@${memberid}>`, embed);
 					}
 
 					message.member.roles.add(roleid).then(() => {
@@ -72,7 +74,7 @@ module.exports = {
 								'Please let us know if you need any help!',
 							).setThumbnail('attachment://' + part[0] + '.png');
 
-						return message.channel.send(embed);
+						return message.channel.send(`<@${memberid}>`, embed);
 					}).catch(err => {
 						const embed = new Discord.MessageEmbed()
 							.setTitle('Verification error!')
@@ -81,7 +83,7 @@ module.exports = {
 							.setThumbnail('https://swgsremu.com/wp-content/uploads/2018/08/sr-jedi-white-60.png')
 							.setDescription('**Something went wrong: ' + err + '**' + '\n Please report this issue to a developer!');
 
-						return message.channel.send(embed);
+						return message.channel.send(`<@${memberid}>`, embed);
 					});
 				});
 			}
@@ -93,7 +95,7 @@ module.exports = {
 					.setThumbnail('https://swgsremu.com/wp-content/uploads/2018/08/sr-jedi-white-60.png')
 					.setDescription('**No character named: ' + args[0] + '**');
 
-				return message.channel.send(embed);
+				return message.channel.send(`<@${memberid}>`, embed);
 			}
 		}).catch((err) => {
 			const embed = new Discord.MessageEmbed()
@@ -103,7 +105,7 @@ module.exports = {
 				.setThumbnail('https://swgsremu.com/wp-content/uploads/2018/08/sr-jedi-white-60.png')
 				.setDescription('**An error occurred, please send this error to the devs**: \n _' + err + '_');
 
-			return message.channel.send(embed);
+			return message.channel.send(`<@${memberid}>`, embed);
 		});
 
 		query.release(pool);
