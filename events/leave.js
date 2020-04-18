@@ -43,6 +43,27 @@ module.exports = {
 				return member.guild.channels.cache.get(channels.admin_channel).send(embed);
 			});
 
+
+			const checkverify = query.process(
+				pool, 'SELECT tag FROM discord_verified where tag = ' + mysql.escape(member.user.username + '#' + member.user.discriminator),
+			);
+
+			checkverify.then(result => {
+				if (result.length > 0) {
+					const verifyremove = query.process(
+						pool, 'DELETE FROM discord_verified where tag = ' + mysql.escape(member.user.username + '#' + member.user.discriminator),
+					);
+
+					verifyremove.then(() => {
+						console.log('User (' + member.user.username + '#' + member.user.discriminator + ') has left and has been removed from the verified users list.');
+					}).catch(() => {
+						console.log('An error occurred removing user (' + member.user.username + '#' + member.user.discriminator + ') from the verified users list.');
+					});
+				}
+			}).catch(
+				console.log('Unverified user (' + member.user.username + '#' + member.user.discriminator + ') has left.'),
+			);
+
 			query.release(pool);
 		});
 	},

@@ -40,6 +40,8 @@ module.exports = {
 
 				query.release(pool);
 
+				console.log(channels.unverified.channels.unverified);
+
 				const embed = new Discord.MessageEmbed()
 					.setTitle('Welcome to Sentinels Republic!')
 					.setColor(0x0099ff)
@@ -63,7 +65,7 @@ module.exports = {
 					
 					If you encounter any issues, please let us know.`);
 
-				return member.guild.channels.cache.get(channels.unverified_channel).send(`<@${memberid}>`, embed);
+				return member.guild.channels.cache.get(channels.unverified.channels.unverified).send(`<@${memberid}>`, embed);
 
 			});
 		});

@@ -6,6 +6,9 @@ module.exports = {
 	process: async (message, args, pool, footer, verified_role) => {
 
 		const memberid = message.author.id;
+		const tag = message.member.user.tag;
+
+		const epochTime = Math.round(Date.now() / 1000);
 
 		if (message.author.id == message.author.id) {
 			message.delete();
@@ -30,61 +33,84 @@ module.exports = {
 		chardata.then(result => {
 			if (result.length > 0) {
 				result.forEach(element => {
-					// Format data
-					const template = element.template.split('/');
-					const part = template[3].split('.');
-					const part2 = part[0].split('_');
-					const race = part2[0].charAt(0).toUpperCase() + part2[0].slice(1);
-					const gender = part2[1].charAt(0).toUpperCase() + part2[1].slice(1);
-					const firstname = element.firstname.charAt(0).toUpperCase() + element.firstname.slice(1);
-					const surname = element.surname.charAt(0).toUpperCase() + element.surname.slice(1);
 
-					// message.channel.send(message.member.user.tag);
+					const verifydata = query.process(
+						pool, 'select tag, account_id from discord_verified where account_id = ' + mysql.escape(element.account_id),
+					);
 
-					const roleid = verified_role;
+					verifydata.then(verifyresult => {
+						const roleid = verified_role;
 
-					if (message.member.roles.cache.has(roleid)) {
-						const embed = new Discord.MessageEmbed()
-							.setTitle('Verification error!')
-							.setColor(0xff471a)
-							.setFooter(footer)
-							.setThumbnail('https://swgsremu.com/wp-content/uploads/2018/08/sr-jedi-white-60.png')
-							.setDescription('**Your account is already verified!**');
+						if (verifyresult.length > 0 || message.member.roles.cache.has(roleid)) {
+							const embed = new Discord.MessageEmbed()
+								.setTitle('Verification error!')
+								.setColor(0xff471a)
+								.setFooter(footer)
+								.setThumbnail('https://swgsremu.com/wp-content/uploads/2018/08/sr-jedi-white-60.png')
+								.setDescription('**Your account is already verified!**');
 
-						return message.channel.send(`<@${memberid}>`, embed);
-					}
+							return message.channel.send(`<@${memberid}>`, embed);
+						}
+						else {
+							// Format data
+							const template = element.template.split('/');
+							const part = template[3].split('.');
+							const part2 = part[0].split('_');
+							const race = part2[0].charAt(0).toUpperCase() + part2[0].slice(1);
+							const gender = part2[1].charAt(0).toUpperCase() + part2[1].slice(1);
+							const firstname = element.firstname.charAt(0).toUpperCase() + element.firstname.slice(1);
+							const surname = element.surname.charAt(0).toUpperCase() + element.surname.slice(1);
 
-					message.member.roles.add(roleid).then(() => {
-						const embed = new Discord.MessageEmbed()
-							.setTitle('Verification successful')
-							.attachFiles(['assets/images/species/' + part[0] + '.png'])
-							.setColor(0x0099ff)
-							.setFooter(footer)
-							.setDescription(
-								'**Character: ' + race + ' ' + gender + ' - ' + firstname + ' ' + surname + '**\n' +
-								'Welcome to the Sentinels Republic Discord!' + '\n' +
-								'You have now been granted access to the rest of the public chat channels. \n \n' +
-								'[Website](http://www.swgsremu.com) | ' +
-								'[Forums](https://forum.swgsremu.com) | ' +
-								'[Launcher](http://swgsremu.com/support/launcher-download) \n \n' +
-								'[Events](https://swgsremu.com/updates/events/) | ' +
-								'[Facebook](https://facebook.com/SentinelsRepublicEmu) | ' +
-								'[Twitter](https://twitter.com/SentinelsRepEMU) | ' +
-								'[Wiki](http://sremu.wikia.com/wiki/SWG_Sentinels_Republic_Wiki) \n \n' +
-								'Please let us know if you need any help!',
-							).setThumbnail('attachment://' + part[0] + '.png');
+							message.member.roles.add(roleid).then(() => {
 
-						return message.channel.send(`<@${memberid}>`, embed);
+								const verifystore = query.process(
+									pool, 'INSERT INTO discord_verified (tag, account_id, timestamp) \
+									VALUES (' + mysql.escape(tag) + ',' +
+									mysql.escape(element.account_id) + ',' + mysql.escape(epochTime) + ')',
+								);
+
+								verifystore.then(() => {
+									console.log('User (' + tag + ') has been successfully verified and logged.');
+								}).catch(() => {
+									console.log('An error occurred verifying and logging user (' + tag + ').');
+								});
+
+								const embed = new Discord.MessageEmbed()
+									.setTitle('Verification successful')
+									.attachFiles(['assets/images/species/' + part[0] + '.png'])
+									.setColor(0x0099ff)
+									.setFooter(footer)
+									.setDescription(
+										'**Character: ' + race + ' ' + gender + ' - ' + firstname + ' ' + surname + '**\n' +
+										'Welcome to the Sentinels Republic Discord!' + '\n' +
+										'You have now been granted access to the rest of the public chat channels. \n \n' +
+										'[Website](http://www.swgsremu.com) | ' +
+										'[Forums](https://forum.swgsremu.com) | ' +
+										'[Launcher](http://swgsremu.com/support/launcher-download) \n \n' +
+										'[Events](https://swgsremu.com/updates/events/) | ' +
+										'[Facebook](https://facebook.com/SentinelsRepublicEmu) | ' +
+										'[Twitter](https://twitter.com/SentinelsRepEMU) | ' +
+										'[Wiki](http://sremu.wikia.com/wiki/SWG_Sentinels_Republic_Wiki) \n \n' +
+										'Please let us know if you need any help!',
+									).setThumbnail('attachment://' + part[0] + '.png');
+
+								return message.channel.send(`<@${memberid}>`, embed);
+
+							}).catch(err => {
+								const embed = new Discord.MessageEmbed()
+									.setTitle('Verification error!')
+									.setColor(0xff471a)
+									.setFooter(footer)
+									.setThumbnail('https://swgsremu.com/wp-content/uploads/2018/08/sr-jedi-white-60.png')
+									.setDescription('**Something went wrong: ' + err + '**' + '\n Please report this issue to a developer!');
+
+								return message.channel.send(`<@${memberid}>`, embed);
+							});
+						}
 					}).catch(err => {
-						const embed = new Discord.MessageEmbed()
-							.setTitle('Verification error!')
-							.setColor(0xff471a)
-							.setFooter(footer)
-							.setThumbnail('https://swgsremu.com/wp-content/uploads/2018/08/sr-jedi-white-60.png')
-							.setDescription('**Something went wrong: ' + err + '**' + '\n Please report this issue to a developer!');
-
-						return message.channel.send(`<@${memberid}>`, embed);
+						return console.log('Failed fetching verification results: ' + err);
 					});
+
 				});
 			}
 			else {
