@@ -40,8 +40,6 @@ module.exports = {
 
 				query.release(pool);
 
-				console.log(channels.unverified.channels.unverified);
-
 				const embed = new Discord.MessageEmbed()
 					.setTitle('Welcome to Sentinels Republic!')
 					.setColor(0x0099ff)

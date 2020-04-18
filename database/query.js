@@ -11,8 +11,9 @@ module.exports = {
 	},
 	release: (pool) => {
 		// Release database connection
+		// eslint-disable-next-line no-unused-vars
 		pool.on('release', (connection) => {
-			console.log('Database connection (%d) has been released.', connection.threadId);
+			// console.log('Database connection (%d) has been released.', connection.threadId);
 		});
 	},
 };

@@ -30,7 +30,7 @@ module.exports = {
 			);
 
 			memberdata.then(() => {
-				return console.log('User (' + member.user.username + ') has left the server.');
+				// return console.log('User (' + member.user.username + ') has left the server.');
 			}).catch((err) => {
 
 				const embed = new Discord.MessageEmbed()
